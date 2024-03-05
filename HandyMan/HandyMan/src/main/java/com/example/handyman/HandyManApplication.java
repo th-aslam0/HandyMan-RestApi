@@ -4,14 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.example.handyman.model.User;
-import com.example.handyman.repository.UserRepository;
+import com.example.handyman.repository.*;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = {HibernateJpaAutoConfiguration.class})
 public class HandyManApplication {
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -27,4 +28,14 @@ public class HandyManApplication {
 
 		};
 	}
+	@Bean
+    ApplicationRunner init(HandyManRepository repository) {
+		return args ->{};
+
+		}
+	@Bean
+    ApplicationRunner init(CustomerRepository repository) {
+		return args ->{};
+
+		}
 }

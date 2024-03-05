@@ -18,8 +18,8 @@ public class UserDetails implements UserDetailsService {
 @Autowired    
 UserRepository userRepo;
     @Override
-    public org.springframework.security.core.userdetails.UserDetails loadUserByUsername(String username)throws UsernameNotFoundException {
-        User user = userRepo.findUserByEmail(username);
+    public org.springframework.security.core.userdetails.UserDetails loadUserByUsername(String email)throws UsernameNotFoundException {
+        User user = userRepo.findUserByEmail(email);
 //        if(user==null){
 //            throw new UsernameNotFoundException("User not exists by Username");
 //        }

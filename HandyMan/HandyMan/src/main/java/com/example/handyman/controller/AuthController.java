@@ -1,7 +1,5 @@
 package com.example.handyman.controller;
 
-import java.util.Collections;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,12 +12,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.example.handyman.dto.LoginDto;
 import com.example.handyman.dto.SignUpDto;
-import com.example.handyman.repository.UserRepository;
-import com.example.handyman.model.Handyman;
-import com.example.handyman.model.User;
+import com.example.handyman.repository.*;
+import com.example.handyman.model.*;
+
 
 @RestController
 @RequestMapping("/api")
@@ -28,22 +25,41 @@ public class AuthController {
 	private AuthenticationManager authenticationManager;
 	
 	@Autowired
-	private UserRepository userRepository;
+	private HandyManRepository handymanRepository;
+	
+	@Autowired
+	private CustomerRepository customerRepository;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
 	@PostMapping("/login")
-	public ResponseEntity<String> authenticateUser(@RequestBody LoginDto loginDto) {
+	public ResponseEntity<String> authenticate(@RequestBody LoginDto loginDto) {
+
 		try {
-			Authentication authentication = authenticationManager
-					.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword()));
-			SecurityContextHolder.getContext().setAuthentication(authentication);
+			System.out.println("LoginDto Details: " + loginDto);
+
+			UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(loginDto.getEmail(),
+					loginDto.getPassword());
+
+			System.out.println("\nAuthentication Token Before Authentication: " + token);
+
+			Authentication authResult = authenticationManager.authenticate(token);
+
+			System.out.println("Hello");
+			System.out.println("Authentication Token After Authentication: " + authResult);
+			System.out.println();
+
+			System.out.println("Authentication Token in Security Context: "
+					+ SecurityContextHolder.getContext().getAuthentication());
+
+			System.out.println();
+			if (authResult.isAuthenticated())
+				System.out.println("User is Authenticated");
+
 			return new ResponseEntity<>(null, HttpStatus.OK);
-			
 		} catch (Exception e) {
-			// TODO: handle exception
-			System.out.println(e);
+			System.out.println("Exception " + e.getLocalizedMessage());
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -54,19 +70,9 @@ public class AuthController {
 		try {
 			System.out.println("SignUpDTO:" + signUpDto.getEmail());
 			// checking for email exists in a database
-			User u = userRepository.findUserByEmail(signUpDto.getEmail());
+
 			if (signUpDto.getRole().equalsIgnoreCase("handyman")) {
-				Handyman handyman = new Handyman();
-
-				return new ResponseEntity<>(handyman, HttpStatus.CREATED);
-			}
-
-			else {
-				if (u != null) {
-					return new ResponseEntity<>("Email already exist!", HttpStatus.BAD_REQUEST);
-				}
-				// creating user object
-				User user = new User();
+				Handyman user = new Handyman();
 				user.setFirstName(signUpDto.getFirstName());
 				user.setLastName(signUpDto.getLastName());
 
@@ -75,13 +81,33 @@ public class AuthController {
 				String role = signUpDto.getRole();
 				user.setRole(role);
 				System.out.println("User: " + user.getEmail());
-				userRepository.save(user);
-
+				handymanRepository.save(user);
 				return new ResponseEntity<>(user, HttpStatus.CREATED);
 			}
+
+			else if (signUpDto.getRole().equalsIgnoreCase("customer")) {
+//				if (u != null) {
+//					return new ResponseEntity<>("Email already exist!", HttpStatus.BAD_REQUEST);
+//				}
+				// creating user object
+				Customer user = new Customer();
+				user.setFirstName(signUpDto.getFirstName());
+				user.setLastName(signUpDto.getLastName());
+
+				user.setEmail(signUpDto.getEmail());
+				user.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
+				String role = signUpDto.getRole();
+				user.setRole(role);
+				System.out.println("User: " + user.getEmail());
+				customerRepository.save(user);
+				return new ResponseEntity<>(user, HttpStatus.CREATED);
+			}
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+			
 		} catch (Exception e) {
 			System.out.println("ERROR IN SIGNUP");
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+
 	}
 }

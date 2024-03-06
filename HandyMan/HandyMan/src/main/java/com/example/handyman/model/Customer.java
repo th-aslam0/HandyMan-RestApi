@@ -12,7 +12,37 @@ public class Customer {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+	
+	@Column(nullable = false)
+    private String firstName;
+    
+	@Column(nullable = false)
+    private String lastName;
+    
+    @Column(nullable = false, unique = true)
+    private String email;
+    
+    @Column(nullable = false)
+    private String password;
+    
+    @Column(nullable = false )
+    private String role;
+	
+    @Column(nullable = true)
+    private String address;
+
+	@Column(nullable = true)
+	private String phNumber;
+
 	public Customer() {}
+	
+	public Customer(String firstName, String lastName, String email, String password, String role) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.password = password;
+		this.role = role;
+	}
 	
 	public String getFirstName() {
 		return firstName;
@@ -46,17 +76,6 @@ public class Customer {
 		this.password = password;
 	}
 
-	public Customer(String firstName, String lastName, String email, String password, String role, String address,
-			String phNumber) {
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.email = email;
-		this.password = password;
-		this.role = role;
-		this.address = address;
-		PhNumber = phNumber;
-	}
-
 	public String getRole() {
 		return role;
 	}
@@ -65,19 +84,7 @@ public class Customer {
 		this.role = role;
 	}
 
-	@Column(nullable = false)
-    private String firstName;
-    @Column(nullable = false)
-    private String lastName;
-    @Column(nullable = false, unique = true)
-    private String email;
-    @Column(nullable = false)
-    private String password;
-    @Column(nullable = false )
-    private String role;
-	@Column(nullable = false)
-    private String address;
-	
+
 	public String getAddress() {
 		return address;
 	}
@@ -87,14 +94,13 @@ public class Customer {
 	}
 
 	public String getPhNumber() {
-		return PhNumber;
+		return phNumber;
 	}
 
 	public void setPhNumber(String phNumber) {
-		PhNumber = phNumber;
+		this.phNumber = phNumber;
 	}
 
-	@Column(nullable=false)
-	private String PhNumber;
+
 
 }

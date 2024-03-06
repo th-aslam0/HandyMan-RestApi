@@ -8,25 +8,54 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
 @Entity
-@Table(name="handyman")
-public class Handyman{
+@Table(name = "handyman")
+public class Handyman {
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
+	
 	@Column(nullable = false)
-    private String firstName;
-    @Column(nullable = false)
-    private String lastName;
-    @Column(nullable = false, unique = true)
-    private String email;
-    @Column(nullable = false)
-    private String password;
-    @Column(nullable = false )
-    private String role;
-    public Handyman() {}
-	public Handyman( String firstName, String lastName, String email, String password, String role) {
-		
+	private String firstName;
+	
+	@Column(nullable = false)
+	private String lastName;
+	
+	@Column(nullable = false, unique = true)
+	private String email;
+	
+	@Column(nullable = false)
+	private String password;
+	
+	@Column(nullable = false)
+	private String role;
+
+	@Column(nullable = true)
+	private List<String> expertise;
+
+	@Column(nullable = true)
+	private String resAddress;
+
+	@Column(nullable = true)
+	private String PhNumber;
+
+	@Column(nullable = true)
+	private String businessAddress;
+
+	@Column(nullable = true)
+	private double hourlyRate;
+
+	@Column(nullable = true)
+	private String profilePicture;
+
+	@Column(nullable = true)
+	private String certificate;
+
+	public Handyman() {
+	}
+
+	public Handyman(String firstName, String lastName, String email, String password, String role) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
@@ -73,27 +102,6 @@ public class Handyman{
 	public void setRole(String role) {
 		this.role = role;
 	}
-
-	@Column(nullable = false)
-    private List<String> expertise;
-	
-	@Column(nullable = false)
-    private String resAddress;
-	
-	@Column(nullable=false)
-	private String PhNumber;
-	
-	@Column(nullable=false)
-	private String businessAddress;
-	
-	@Column(nullable=false)
-	private double hourlyRate;
-
-	@Column(nullable=false)
-	private String profilePicture;
-	
-	@Column(nullable=true)
-	private String certificate;
 
 	public List<String> getExpertise() {
 		return expertise;
@@ -149,5 +157,5 @@ public class Handyman{
 
 	public void setCertificate(String certificate) {
 		this.certificate = certificate;
-	} 
+	}
 }

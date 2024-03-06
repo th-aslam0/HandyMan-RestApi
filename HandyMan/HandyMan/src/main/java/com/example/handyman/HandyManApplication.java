@@ -14,7 +14,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.example.handyman.email.EmailService;
-import com.example.handyman.model.User;
+import com.example.handyman.model.Customer;
+import com.example.handyman.model.Customer;
 import com.example.handyman.repository.*;
 
 
@@ -30,29 +31,23 @@ public class HandyManApplication {
 		SpringApplication.run(HandyManApplication.class, args);
 	}
 	@Bean
-    ApplicationRunner init(UserRepository repository) {
+    ApplicationRunner init(CustomerRepository repository) {
 		return args -> {
-			repository.save( new User ("a","b", "abc@gmail.com", passwordEncoder.encode("12345"), "d" ));
+			repository.save(new Customer ("a","b", "abc@gmail.com", passwordEncoder.encode("12345"), "d" ));
 			repository.findAll().forEach(System.out::println);
-
 		};
 	}
 	
-	@EventListener(ApplicationReadyEvent.class)
-	public void triggerMail() throws MessagingException {
-		senderService.sendSimpleEmail("taimoor.h.aslam@gmail.com",
-				"This is email body",
-				"This is email subject");
-
-	}
-	@Bean
-    ApplicationRunner init(HandyManRepository repository) {
-		return args ->{};
-
-		}
-	@Bean
-    ApplicationRunner init(CustomerRepository repository) {
-		return args ->{};
-
-		}
+//	@EventListener(ApplicationReadyEvent.class)
+//	public void triggerMail() throws MessagingException {
+//		senderService.sendSimpleEmail("taimoor.h.aslam@gmail.com",
+//				"This is email body",
+//				"This is email subject");
+//
+//	}
+//	@Bean
+//    ApplicationRunner init(HandyManRepository repository) {
+//		return args ->{};
+//
+//		}
 }

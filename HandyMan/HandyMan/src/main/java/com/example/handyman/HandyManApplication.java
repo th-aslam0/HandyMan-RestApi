@@ -24,8 +24,7 @@ public class HandyManApplication {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-	private EmailService senderService;
+
     
 	public static void main(String[] args) {
 		SpringApplication.run(HandyManApplication.class, args);
@@ -38,13 +37,6 @@ public class HandyManApplication {
 		};
 	}
 	
-	@EventListener(ApplicationReadyEvent.class)
-	public void triggerMail() throws MessagingException {
-		senderService.sendSimpleEmail("taimoor.h.aslam@gmail.com",
-				"This is email body",
-				"This is email subject");
-
-	}
 	@Bean
     ApplicationRunner init2(HandyManRepository repository) {
 		return args ->{};

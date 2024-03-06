@@ -1,8 +1,11 @@
 package com.example.handyman.controller;
 
+import javax.mail.MessagingException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.handyman.dto.LoginDto;
 import com.example.handyman.dto.SignUpDto;
+import com.example.handyman.email.EmailService;
 import com.example.handyman.repository.*;
 import com.example.handyman.model.*;
 
@@ -32,7 +36,10 @@ public class AuthController {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-
+	
+    @Autowired
+	private EmailService senderService;
+    
 	@PostMapping("/login")
 	public ResponseEntity<String> authenticate(@RequestBody LoginDto loginDto) {
 
@@ -59,9 +66,13 @@ public class AuthController {
 
 			return new ResponseEntity<>(null, HttpStatus.OK);
 		} catch (Exception e) {
-			System.out.println("Exception " + e.getLocalizedMessage());
+			System.out.println("Exception " + e.getMessage());
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+	@Async
+	public void sendEmail(String emailId, String emailSubject, String emailBody) throws MessagingException {
+		senderService.sendSimpleEmail(emailId, emailBody, emailSubject);
 	}
 
 	@PostMapping("/signup")
@@ -82,13 +93,12 @@ public class AuthController {
 				user.setRole(role);
 				System.out.println("User: " + user.getEmail());
 				handymanRepository.save(user);
+				sendEmail(signUpDto.getEmail(), "Hey, " + signUpDto.getFirstName() + ",\nYour signup at Handyman is successful!", "Handyman SignUp Success");
 				return new ResponseEntity<>(user, HttpStatus.CREATED);
 			}
 
 			else if (signUpDto.getRole().equalsIgnoreCase("customer")) {
-//				if (u != null) {
-//					return new ResponseEntity<>("Email already exist!", HttpStatus.BAD_REQUEST);
-//				}
+				
 				// creating user object
 				Customer user = new Customer();
 				user.setFirstName(signUpDto.getFirstName());

@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.example.handyman.email.EmailService;
 import com.example.handyman.model.Customer;
+import com.example.handyman.model.Handyman;
 import com.example.handyman.model.Customer;
 import com.example.handyman.repository.*;
 
@@ -32,13 +33,22 @@ public class HandyManApplication {
 	@Bean
     ApplicationRunner init1(CustomerRepository repository) {
 		return args -> {
-			repository.save(new Customer ("a","b", "abc@gmail.com", passwordEncoder.encode("12345"), "d" ));
+			repository.save(new Customer("John", "Doe", "kushagradeepak@gmail.com", passwordEncoder.encode("1234qwerty"), "customer"));
+			repository.save(new Customer("Aisha", "Malik", "aisha.malik@example.com", passwordEncoder.encode("p@ssw0rd"), "customer"));
+			repository.save(new Customer("Rahul", "Sharma", "rahul.sharma@example.com", passwordEncoder.encode("secure123"), "customer"));
+			repository.save(new Customer("Emily", "Johnson", "emily.j@example.com", passwordEncoder.encode("pass123"), "customer"));			
 			repository.findAll().forEach(System.out::println);
 		};
 	}
 	
 	@Bean
     ApplicationRunner init2(HandyManRepository repository) {
-		return args ->{};
+		return args ->{
+			repository.save(new Handyman("Anu", "Malik", "anu.malik@example.com", passwordEncoder.encode("p@ssw0rd"), "handyman"));
+			repository.save(new Handyman("Rohit", "Sharma", "rohit.sharma@example.com", passwordEncoder.encode("secure123"), "handyman"));
+			repository.save(new Handyman("Emily", "Dickinson", "emily.dickinson@example.com", passwordEncoder.encode("pass123"), "handyman"));
+			repository.save(new Handyman("Alex", "Miller", "alex.m@example.com", passwordEncoder.encode("strongPass"), "handyman"));
+			repository.findAll().forEach(System.out::println);
+		};
 		}
 }

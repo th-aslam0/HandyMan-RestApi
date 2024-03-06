@@ -7,6 +7,5 @@ import com.example.handyman.model.*;
 
 public interface CustomerRepository extends JpaRepository<Customer, Integer> {
 	Customer findUserByEmail( String email);
-
 }
 

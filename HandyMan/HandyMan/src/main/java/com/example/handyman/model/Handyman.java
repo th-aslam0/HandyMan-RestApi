@@ -32,7 +32,7 @@ public class Handyman {
 	private String role;
 
 	@Column(nullable = true)
-	private List<String> expertise;
+	private String expertise;
 
 	@Column(nullable = true)
 	private String resAddress;
@@ -103,11 +103,11 @@ public class Handyman {
 		this.role = role;
 	}
 
-	public List<String> getExpertise() {
+	public String getExpertise() {
 		return expertise;
 	}
 
-	public void setExpertise(List<String> expertise) {
+	public void setExpertise(String expertise) {
 		this.expertise = expertise;
 	}
 

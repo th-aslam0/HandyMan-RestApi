@@ -31,23 +31,22 @@ public class HandyManApplication {
 		SpringApplication.run(HandyManApplication.class, args);
 	}
 	@Bean
-    ApplicationRunner init(CustomerRepository repository) {
+    ApplicationRunner init1(CustomerRepository repository) {
 		return args -> {
 			repository.save(new Customer ("a","b", "abc@gmail.com", passwordEncoder.encode("12345"), "d" ));
 			repository.findAll().forEach(System.out::println);
 		};
 	}
 	
-//	@EventListener(ApplicationReadyEvent.class)
-//	public void triggerMail() throws MessagingException {
-//		senderService.sendSimpleEmail("taimoor.h.aslam@gmail.com",
-//				"This is email body",
-//				"This is email subject");
-//
-//	}
-//	@Bean
-//    ApplicationRunner init(HandyManRepository repository) {
-//		return args ->{};
-//
-//		}
+	@EventListener(ApplicationReadyEvent.class)
+	public void triggerMail() throws MessagingException {
+		senderService.sendSimpleEmail("taimoor.h.aslam@gmail.com",
+				"This is email body",
+				"This is email subject");
+
+	}
+	@Bean
+    ApplicationRunner init2(HandyManRepository repository) {
+		return args ->{};
+		}
 }

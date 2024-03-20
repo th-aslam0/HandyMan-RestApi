@@ -1,0 +1,46 @@
+package com.example.handyman.dto;
+
+import java.time.LocalDateTime;  
+
+
+public class FindHandymanDto {
+public Customer customer;
+public LocalDateTime  jobDateTime;
+public String trade;
+public String jobDescription;
+public int jobDuration;
+public String image;
+
+public FindHandymanDto() {}
+
+public LocalDateTime getJobDateTime() {
+	return jobDateTime;
+}
+public void setJobDateTime(LocalDateTime jobDateTime) {
+	this.jobDateTime = jobDateTime;
+}
+public String getTrade() {
+	return trade;
+}
+public void setTrad(String trade) {
+	this.trade = trade;
+}
+public String getJobDescription() {
+	return jobDescription;
+}
+public void setJobDescription(String jobDescription) {
+	this.jobDescription = jobDescription;
+}
+public int getJobDuration() {
+	return jobDuration;
+}
+public void setJobDuration(int jobDuration) {
+	this.jobDuration = jobDuration;
+}
+public String getImage() {
+	return image;
+}
+public void setImage(String image) {
+	this.image = image;
+}
+}

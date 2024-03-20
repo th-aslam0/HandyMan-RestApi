@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class ProposalDto {
     private int proposalId;
-    private int jobRequestId;
+    private int contractId;
     private String tradesmanName;
     private String proposalDescription;
     private double proposedHours;
@@ -16,9 +16,9 @@ public class ProposalDto {
         // Default constructor
     }
 
-    public ProposalDto(int proposalId, int jobRequestId, String tradesmanName, String proposalDescription, double proposedHours, Date proposalDate) {
+    public ProposalDto(int proposalId, int contractId, String tradesmanName, String proposalDescription, double proposedHours, Date proposalDate) {
         this.proposalId = proposalId;
-        this.jobRequestId = jobRequestId;
+        this.contractId = contractId;
         this.tradesmanName = tradesmanName;
         this.proposalDescription = proposalDescription;
         this.proposedHours = proposedHours;
@@ -28,11 +28,11 @@ public class ProposalDto {
     // Getters and setters
 
     public int getJobRequestId() {
-		return jobRequestId;
+		return contractId;
 	}
 
-	public void setJobRequestId(int jobRequestId) {
-		this.jobRequestId = jobRequestId;
+	public void setJobRequestId(int contractId) {
+		this.contractId = contractId;
 	}
 
 	public int getProposalId() {

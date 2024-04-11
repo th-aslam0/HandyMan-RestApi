@@ -16,9 +16,12 @@ import com.example.handyman.repository.CustomerRepository;
 @Service
 public class CustomerDetail implements UserDetailsService {
 
-	@Autowired
+	
 	CustomerRepository userRepo;
 
+	@Autowired
+	public CustomerDetail( CustomerRepository userRepo ) { this.userRepo = userRepo; }
+	
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		Customer user = userRepo.findUserByEmail(email);
@@ -26,8 +29,7 @@ public class CustomerDetail implements UserDetailsService {
 			throw new UsernameNotFoundException("Customer not exists by email: " + email);
 		}
 
-		List<GrantedAuthority> authority = new ArrayList<GrantedAuthority>();
-		authority.add(new SimpleGrantedAuthority("ROLE_USER"));
-		return new org.springframework.security.core.userdetails.User(email, user.getPassword(), authority);
+	
+		return (UserDetails) user;
 	}
 }

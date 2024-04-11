@@ -38,7 +38,7 @@ public class Handyman {
 	private String resAddress;
 
 	@Column(nullable = true)
-	private String PhNumber;
+	private String phNumber;
 
 	@Column(nullable = true)
 	private String businessAddress;
@@ -120,11 +120,11 @@ public class Handyman {
 	}
 
 	public String getPhNumber() {
-		return PhNumber;
+		return phNumber;
 	}
 
-	public void setPhNumber(String phNumber) {
-		PhNumber = phNumber;
+	public void setPhNumber(String phNum) {
+		phNumber = phNum;
 	}
 
 	public String getBusinessAddress() {

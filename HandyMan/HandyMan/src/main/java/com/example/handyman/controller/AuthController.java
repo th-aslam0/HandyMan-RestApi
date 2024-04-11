@@ -12,6 +12,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,9 +30,11 @@ import com.example.handyman.dto.RatingDto;
 import com.example.handyman.dto.SignUpDto;
 import com.example.handyman.email.EmailService;
 import com.example.handyman.repository.*;
+import com.example.handyman.service.CustomerDetail;
+import com.example.handyman.service.HandymanDetail;
 import com.example.handyman.model.*;
 
-
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/api")
 public class AuthController {
@@ -63,8 +67,12 @@ public class AuthController {
     
     @Autowired
     private RatingRepository ratingRepository;
+    @Autowired
+    private CustomerDetail custDetails;
+    @Autowired
+    private HandymanDetail hManDetails;
     
-
+    
 	// TODO: Make GET ALL functional for all the endpoints 
 	// March 19, 2024
 
@@ -73,6 +81,7 @@ public class AuthController {
 	public ResponseEntity<String> authenticate(@RequestBody LoginDto loginDto) {
 
 		try {
+			/*
 			System.out.println("LoginDto Details: " + loginDto);
 
 			UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(loginDto.getEmail(),
@@ -94,8 +103,29 @@ public class AuthController {
 				System.out.println("User is Authenticated");
 
 			return new ResponseEntity<>(null, HttpStatus.OK);
+			*/
+			UserDetails userDetails;
+			if (loginDto.getRole()=="handyman") {
+				 userDetails = hManDetails.loadUserByUsername(loginDto.getEmail());
+			}
+			else{
+				 userDetails = custDetails.loadUserByUsername(loginDto.getEmail());
+			}
+	        if (userDetails != null && passwordEncoder.matches(loginDto.getPassword(), userDetails.getPassword())) {
+
+	            Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+				System.out.println("\nAuthentication Token Before Authentication: " + authentication);
+
+	            Authentication authResult = authenticationManager.authenticate(authentication);
+				System.out.println("Authentication Token After Authentication: " + authResult);
+
+	            SecurityContextHolder.getContext().setAuthentication(authentication);
+	            return new ResponseEntity<>(null, HttpStatus.OK);
+	        }
+	        else
+	        	return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (Exception e) {
-			System.out.println("Exception " + e.getMessage());
+			System.out.println("Exception " + e.getLocalizedMessage());
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -120,8 +150,16 @@ public class AuthController {
 				String role = signUpDto.getRole();
 				user.setRole(role);
 				System.out.println("User: " + user.getEmail());
+				user.setExpertise(signUpDto.getExpertise());
+				user.setResAddress(signUpDto.getResAddress());
+				user.setPhNumber(signUpDto.getPhNumber());
+				user.setBusinessAddress(signUpDto.getBusinessAddress());
+				user.setHourlyRate(signUpDto.getHourlyRate());
+				user.setProfilePicture(signUpDto.getProfilePicture());
+				user.setCertificate(signUpDto.getCertificate());
 				handymanRepository.save(user);
-				sendEmail(signUpDto.getEmail(), "Hey, " + signUpDto.getFirstName() + ",\nYour signup at Handyman is successful!", "Handyman SignUp Success");
+
+				//sendEmail(signUpDto.getEmail(), "Hey, " + signUpDto.getFirstName() + ",\nYour signup at Handyman is successful!", "Handyman SignUp Success");
 				return new ResponseEntity<>(user, HttpStatus.CREATED);
 			}
 
@@ -143,7 +181,7 @@ public class AuthController {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 			
 		} catch (Exception e) {
-			System.out.println("ERROR IN SIGNUP");
+			System.out.println("ERROR IN SIGNUP: "+ e.getMessage());
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
@@ -173,22 +211,25 @@ public class AuthController {
 		
 	}
 
-	@GetMapping("/jobs")
-	public ResponseEntity<?> getJobs(@RequestParams Integer id) {
-	    try {
-	        Optional<HandyManServiceRequest> hManService = HandyManSRRepository.findById(id);
-
-	        if (hManService.isPresent()) {
-	            return new ResponseEntity<>(hManService.get(), HttpStatus.OK);
-	        } else {
-	            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-	        }
-
-	    } catch (Exception e) {
-	        System.out.println("Exception " + e.getMessage());
-	        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-	    }
-	}
+	//////???????
+	
+	
+//	@GetMapping("/jobs")
+//	public ResponseEntity<?> getJobs(@RequestParams Integer id) {
+//	    try {
+//	        Optional<HandyManServiceRequest> hManService = HandyManSRRepository.findById(id);
+//
+//	        if (hManService.isPresent()) {
+//	            return new ResponseEntity<>(hManService.get(), HttpStatus.OK);
+//	        } else {
+//	            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+//	        }
+//
+//	    } catch (Exception e) {
+//	        System.out.println("Exception " + e.getMessage());
+//	        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+//	    }
+//	}
 
 	@GetMapping("/job/{id}")
 	public ResponseEntity<?> getJob(@PathVariable Integer id) {
@@ -493,25 +534,25 @@ public class AuthController {
 		}
 	}
 	
-	@GetMapping("/ratings")
-	public ResponseEntity<?> getRatingById(@RequestParams int id) {
-		try {
-			Optional<Rating> optionalRating = ratingRepository.findById(id);
-
-			if (optionalRating != null) {
-					
-				return new ResponseEntity<>(optionalRating.get(), HttpStatus.OK);
-			} else {
-				return new ResponseEntity<>("Rating not found", HttpStatus.NOT_FOUND);
-			}
-
-		} catch (Exception e) {
-			System.out.println("Exception " + e.getMessage());
-
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-	
+//	@GetMapping("/ratings")
+//	public ResponseEntity<?> getAllRatings(@RequestParams int id) {
+//		try {
+//			Optional<Rating> optionalRating = ratingRepository.findById(id);
+//
+//			if (optionalRating != null) {
+//					
+//				return new ResponseEntity<>(optionalRating.get(), HttpStatus.OK);
+//			} else {
+//				return new ResponseEntity<>("Rating not found", HttpStatus.NOT_FOUND);
+//			}
+//
+//		} catch (Exception e) {
+//			System.out.println("Exception " + e.getMessage());
+//
+//			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+//		}
+//	}
+//	
 	@GetMapping("/rating/{id}")
 	public ResponseEntity<?> getRatingById(@PathVariable int id) {
 		try {

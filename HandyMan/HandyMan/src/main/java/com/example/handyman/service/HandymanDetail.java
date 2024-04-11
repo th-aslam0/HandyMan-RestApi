@@ -26,8 +26,7 @@ public class HandymanDetail implements UserDetailsService {
 			throw new UsernameNotFoundException("Handyman  not exists by email: " + email);
 		}
 
-		List<GrantedAuthority> authority = new ArrayList<GrantedAuthority>();
-		authority.add(new SimpleGrantedAuthority("ROLE_USER"));
-		return new org.springframework.security.core.userdetails.User(email, user.getPassword(), authority);
+		
+		return new org.springframework.security.core.userdetails.User(email, user.getPassword(), null);
 	}
 }
